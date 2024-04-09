@@ -607,6 +607,15 @@ sub vor_vv_v0t {
     return ".word ".($template | ($vs2 << 20) | ($vs1 << 15) | ($vd << 7));
 }
 
+sub vor_vv {
+    # vor.vv vd, vs2, vs1
+    my $template = 0b0010101_00000_00000_000_00000_1010111;
+    my $vd = read_vreg shift;
+    my $vs2 = read_vreg shift;
+    my $vs1 = read_vreg shift;
+    return ".word ".($template | ($vs2 << 20) | ($vs1 << 15) | ($vd << 7));
+}
+
 sub vse8_v {
     # vse8.v vd, (rs1), vm
     my $template = 0b000000_0_00000_00000_000_00000_0100111;
@@ -741,6 +750,15 @@ sub vslideup_vi {
 sub vsll_vi {
     # vsll.vi vd, vs2, uimm, vm
     my $template = 0b1001011_00000_00000_011_00000_1010111;
+    my $vd = read_vreg shift;
+    my $vs2 = read_vreg shift;
+    my $uimm = shift;
+    return ".word ".($template | ($vs2 << 20) | ($uimm << 15) | ($vd << 7));
+}
+
+sub vsrl_vi {
+    # vsrl.vi vd, vs2, uimm, vm
+    my $template = 0b1010001_00000_00000_011_00000_1010111;
     my $vd = read_vreg shift;
     my $vs2 = read_vreg shift;
     my $uimm = shift;

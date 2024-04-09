@@ -44,12 +44,19 @@ void ChaCha20_ctr32_zvkb(unsigned char *out, const unsigned char *inp,
                          size_t len, const unsigned int key[8],
                          const unsigned int counter[4]);
 
+void ChaCha20_ctr32_v(unsigned char *out, const unsigned char *inp,
+                      size_t len, const unsigned int key[8],
+                      const unsigned int counter[4]);
+
 void ChaCha20_ctr32(unsigned char *out, const unsigned char *inp, size_t len,
                     const unsigned int key[8], const unsigned int counter[4])
 {
-    if (len > CHACHA_BLK_SIZE && RISCV_HAS_ZVKB() && RISCV_HAS_ZBB() &&
-        riscv_vlen() >= 128) {
-        ChaCha20_ctr32_zvkb(out, inp, len, key, counter);
+    if (len > CHACHA_BLK_SIZE && riscv_vlen() >= 128 && RISCV_HAS_ZBB()) {
+        if (RISCV_HAS_ZVKB()) {
+            ChaCha20_ctr32_zvkb(out, inp, len, key, counter);
+        } else {
+            ChaCha20_ctr32_v(out, inp, len, key, counter);
+        }
     } else {
         ChaCha20_ctr32_c(out, inp, len, key, counter);
     }
